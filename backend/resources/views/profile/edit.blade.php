@@ -1,0 +1,9 @@
+@extends('layouts.app')
+@section('title', 'My profile · Northstar CRM')
+@section('body')
+<div class="shell"><aside class="side"><div class="brand"><b>N</b>Northstar CRM</div><nav class="nav"><div class="nav-label">Workspace</div><a href="{{ route('dashboard') }}"><span class="ico">◫</span>Dashboard</a><a href="{{ route('profile.edit') }}" class="active"><span class="ico">◉</span>My profile</a></nav><div class="side-foot"><form method="POST" action="{{ route('logout') }}">@csrf<button class="btn" style="width:100%">Sign out</button></form></div></aside>
+<main class="main"><header class="top"><span class="crumb">Workspace / My profile</span><div class="userbox"><span class="avatar">{{ strtoupper(substr($user->name,0,1)) }}</span>{{ $user->name }}</div></header><div class="page"><div class="heading"><div><h1>My profile</h1><div class="muted">Manage your account details.</div></div></div><div class="form-card" style="max-width:650px">@if(session('status'))<div class="status">{{ session('status') }}</div>@endif<form method="POST" action="{{ route('profile.update') }}">@csrf @method('PATCH')
+<div class="field"><label for="name">Full name</label><input id="name" name="name" value="{{ old('name',$user->name) }}" required>@error('name')<div class="error">{{ $message }}</div>@enderror</div>
+<div class="field"><label for="email">Email address</label><input id="email" type="email" name="email" value="{{ old('email',$user->email) }}" required>@error('email')<div class="error">{{ $message }}</div>@enderror</div>
+<div class="field"><label for="phone">Phone</label><input id="phone" name="phone" value="{{ old('phone',$user->phone) }}">@error('phone')<div class="error">{{ $message }}</div>@enderror</div><button class="btn primary" type="submit">Save changes</button></form></div></div></main></div>
+@endsection
