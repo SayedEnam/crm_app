@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->roles()->whereHas('permissions', fn ($q) => $q->where('slug', $permission))->exists();
     }
 
+    public function isDemoAccount(): bool
+    {
+        return $this->roles()->where('slug', 'like', 'demo-%')->exists();
+    }
+
     public function assignedClients(): HasMany
     {
         return $this->hasMany(Client::class, 'assigned_user_id');

@@ -12,12 +12,22 @@ import { Input } from '@/components/ui/input'
 
 const loginSchema=z.object({email:z.string().email('Enter a valid email.'),password:z.string().min(1,'Password is required.'),remember:z.boolean()})
 type LoginData=z.infer<typeof loginSchema>
+const demoRoleAccounts=[
+  {role:'Super Admin',email:'demo.super-admin@example.com'},
+  {role:'Admin',email:'demo.admin@example.com'},
+  {role:'Manager',email:'demo.manager@example.com'},
+  {role:'Staff',email:'demo.staff@example.com'},
+  {role:'Accountant',email:'demo.accountant@example.com'},
+  {role:'Viewer',email:'demo.viewer@example.com'},
+]
+const demoRolePassword='DemoRole@2026!'
 function AuthCard({title,subtitle,children}:{title:string;subtitle:string;children:React.ReactNode}) {
   return <div className="min-h-screen bg-[#111a2e] lg:grid lg:grid-cols-[1.05fr_.95fr]"><section className="relative hidden overflow-hidden p-14 text-white lg:flex lg:flex-col lg:justify-between"><div className="absolute -left-32 -top-32 size-[520px] rounded-full border border-white/[.07]"/><div className="absolute -left-12 -top-12 size-[280px] rounded-full border border-white/[.08]"/><div className="relative flex items-center gap-3"><span className="grid size-11 place-items-center rounded-xl bg-indigo-500"><BriefcaseBusiness size={23}/></span><div><b className="text-lg">ZomZom CRM</b><p className="text-[10px] tracking-widest text-slate-400">TRAVELS · HIGH THINK HR</p></div></div><div className="relative max-w-xl"><p className="mb-5 text-xs font-bold uppercase tracking-[.22em] text-indigo-300">One workspace. Every client journey.</p><h1 className="text-5xl font-semibold leading-[1.1] tracking-tight">Build trust.<br/><span className="text-indigo-300">Move people forward.</span></h1><p className="mt-6 max-w-md text-sm leading-7 text-slate-400">Manage travel, admissions, documentation, HR consultancy and the relationships that keep every service moving.</p></div><p className="relative text-xs text-slate-500">ZomZom Travels &amp; High Think HR Consultancy</p></section><section className="grid min-h-screen place-items-center bg-[#f6f7fb] px-5 py-12"><div className="w-full max-w-[420px]"><div className="mb-8 text-center lg:hidden"><b className="text-lg text-slate-900">ZomZom CRM</b><p className="mt-1 text-xs text-slate-400">TRAVELS · HIGH THINK HR</p></div><div className="rounded-2xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/[.04] sm:p-9"><div className="mb-7"><h2 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h2><p className="mt-2 text-sm text-slate-500">{subtitle}</p></div>{children}</div><p className="mt-6 text-center text-[11px] text-slate-400">Secure access · Your session is protected</p></div></section></div>
 }
 export function LoginPage() {
   const navigate=useNavigate(),qc=useQueryClient(),[show,setShow]=useState(false)
   const form=useForm<LoginData>({resolver:zodResolver(loginSchema),defaultValues:{email:'',password:'',remember:false}})
+  const fillDemoAccount=(email:string)=>{form.setValue('email',email,{shouldValidate:true});form.setValue('password',demoRolePassword,{shouldValidate:true});mutation.reset()}
   const mutation=useMutation({mutationFn:authApi.login,onSuccess:(user)=>{qc.setQueryData(['auth','user'],user);navigate('/',{replace:true})}})
   return <AuthCard title="Welcome back" subtitle="Sign in to continue to your workspace."><form className="space-y-4" onSubmit={form.handleSubmit((data)=>mutation.mutate(data))}>
     <label className="block"><span className="mb-1.5 block text-xs font-semibold text-slate-700">Email address</span><span className="relative block"><Mail size={16} className="absolute left-3 top-3 text-slate-400"/><Input className="pl-9" autoComplete="username" type="email" {...form.register('email')}/></span>{form.formState.errors.email&&<span className="mt-1 block text-xs text-rose-600">{form.formState.errors.email.message}</span>}</label>
@@ -27,6 +37,7 @@ export function LoginPage() {
     <Button className="w-full" disabled={mutation.isPending}>{mutation.isPending?'Signing in…':<>Sign in <ArrowRight size={16}/></>}</Button>
     <p className="pt-2 text-center text-xs text-slate-500">New client? <Link className="font-semibold text-indigo-600 hover:text-indigo-700" to="/apply">Submit your information</Link></p>
     <p className="text-center text-xs text-slate-500">Already have portal access? <Link className="font-semibold text-indigo-600" to="/client/login">Client sign in</Link></p>
+    <section aria-label="Staff demo accounts" className="rounded-xl border border-indigo-100 bg-indigo-50/70 p-4"><div className="flex items-center justify-between gap-2"><p className="text-xs font-bold uppercase tracking-wide text-indigo-900">Explore staff dashboards</p><span className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-indigo-700">Read-only demo</span></div><div className="mt-3 grid grid-cols-2 gap-2">{demoRoleAccounts.map((account)=><button key={account.role} type="button" onClick={()=>fillDemoAccount(account.email)} className="rounded-lg border border-indigo-100 bg-white px-2.5 py-2 text-left text-xs font-semibold text-slate-700 transition hover:border-indigo-300 hover:bg-indigo-50">{account.role}<span className="mt-1 block truncate text-[10px] font-normal text-slate-500">{account.email}</span></button>)}</div><p className="mt-3 text-[11px] leading-4 text-slate-600">Password for all: <span className="select-all font-semibold text-slate-800">{demoRolePassword}</span></p><p className="mt-1.5 text-[10px] leading-4 text-slate-500">Demo accounts only see fictional assigned records. Changes to the profile and CRM data are disabled.</p></section>
   </form></AuthCard>
 }
 const emailSchema=z.object({email:z.string().email('Enter a valid email.')})

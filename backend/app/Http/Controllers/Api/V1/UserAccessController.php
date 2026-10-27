@@ -44,6 +44,7 @@ class UserAccessController extends Controller
     public function profile(Request $request)
     {
         $user = $request->user();
+        abort_if($user->isDemoAccount(), 403, 'Demo accounts are read-only.');
         $data = $request->validate(['name' => ['sometimes', 'required', 'string', 'max:120'], 'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)], 'phone' => ['sometimes', 'nullable', 'string', 'max:40'], 'current_password' => ['required_with:password', 'current_password'], 'password' => ['sometimes', 'required', 'string', 'min:12', 'confirmed']]);
         unset($data['current_password']);
         if (isset($data['password'])) {
