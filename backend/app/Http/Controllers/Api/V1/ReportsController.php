@@ -28,7 +28,7 @@ class ReportsController extends Controller
         $user = $request->user();
         abort_unless($user->hasPermission('reports.view'), 403);
         $clients = Client::visibleTo($user)->whereBetween('created_at', [$from, $to]);
-        $apps = ApplicationRecord::visibleTo($user)->whereBetween('created_at', [$from, $to]);
+        $apps = ApplicationRecord::visibleTo($user)->whereBetween('applications.created_at', [$from, $to]);
         $expression = match (DB::connection()->getDriverName()) {
             'sqlite' => "strftime('%Y-%m', created_at)",'pgsql' => "to_char(created_at, 'YYYY-MM')",default => "DATE_FORMAT(created_at, '%Y-%m')"
         };
