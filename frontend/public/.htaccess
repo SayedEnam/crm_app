@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Keep shared-hosting visits on HTTPS while avoiding proxy redirect loops.
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # Serve existing files as-is and route React SPA paths through Vite's entry point.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    RewriteRule ^ index.html [L]
+</IfModule>
