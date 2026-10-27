@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\ApplicationController;
 use App\Http\Controllers\Api\V1\AssigneeController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BrandingSettingsController;
 use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\ClientPortalController;
 use App\Http\Controllers\Api\V1\DocumentController;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.v1.')->middleware('configured.mail')->group(function () {
     Route::get('/public/services', [PublicIntakeController::class, 'services'])->name('public.services');
+    Route::get('/public/branding', [BrandingSettingsController::class, 'publicShow'])->name('public.branding');
     Route::post('/client-portal/auth/login', [ClientPortalController::class, 'login'])->middleware('throttle:login');
     Route::post('/client-portal/auth/register', [ClientPortalController::class, 'register'])->middleware('throttle:5,1');
     Route::post('/client-portal/auth/forgot-password', [ClientPortalController::class, 'forgotPassword'])->middleware('throttle:5,1');
@@ -44,6 +46,8 @@ Route::prefix('v1')->name('api.v1.')->middleware('configured.mail')->group(funct
         Route::apiResource('services', ServiceController::class);
         Route::get('/users', [UserAccessController::class, 'index']);
         Route::get('/settings/email', [EmailSettingsController::class, 'index']);
+        Route::get('/settings/branding', [BrandingSettingsController::class, 'show']);
+        Route::post('/settings/branding', [BrandingSettingsController::class, 'update']);
         Route::put('/settings/email', [EmailSettingsController::class, 'update']);
         Route::post('/settings/email/test', [EmailSettingsController::class, 'test']);
         Route::post('/users', [UserAccessController::class, 'store']);

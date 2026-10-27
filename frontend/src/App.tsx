@@ -11,6 +11,7 @@ import { ReportsPage } from '@/pages/ReportsPage'
 import { PublicIntakePage } from '@/pages/PublicIntakePage'
 import { ClientPortalForgotPage, ClientPortalGate, ClientPortalLoginPage, ClientPortalRegisterPage, ClientPortalResetPage } from '@/pages/ClientPortalPages'
 import { EmailSettingsPage } from '@/pages/EmailSettingsPage'
+import { BrandingSettingsPage } from '@/pages/BrandingSettingsPage'
 
 export default function App(){
   return <Routes>
@@ -36,6 +37,7 @@ export default function App(){
       <Route path="users" element={<PermissionGate permission="users.manage"><UsersPage/></PermissionGate>}/>
       <Route path="profile" element={<ProfilePage/>}/>
       <Route path="settings/email" element={<RoleGate role="super-admin"><EmailSettingsPage/></RoleGate>}/>
+      <Route path="settings/branding" element={<RoleGate role="super-admin"><BrandingSettingsPage/></RoleGate>}/>
     </Route></Route>
     <Route path="*" element={<Navigate to="/" replace/>}/>
   </Routes>

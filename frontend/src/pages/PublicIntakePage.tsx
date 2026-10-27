@@ -8,6 +8,7 @@ import { ArrowLeft, CheckCircle2, FilePlus2, FileText, LoaderCircle, ShieldCheck
 import { api, apiMessage, csrfCookie } from '@/api/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useBranding } from '@/hooks/useBranding'
 
 const intakeSchema = z.object({
   name: z.string().trim().min(2, 'Enter your full name.').max(160),
@@ -36,6 +37,7 @@ function fileSize(size: number): string {
 }
 
 export function PublicIntakePage() {
+  const branding = useBranding()
   const [passport, setPassport] = useState<File | null>(null)
   const [supportingDocuments, setSupportingDocuments] = useState<SupportingDocument[]>([])
   const [fileError, setFileError] = useState('')
@@ -140,7 +142,7 @@ export function PublicIntakePage() {
   return <main className="min-h-screen bg-[#f6f7fb] px-4 py-8 sm:px-6 sm:py-12">
     <div className="mx-auto max-w-4xl">
       <header className="mb-7 flex items-center justify-between gap-4">
-        <div><p className="text-sm font-bold text-slate-900">ZomZom Travels &amp; High Think HR</p><p className="mt-1 text-xs text-slate-500">Client service request</p></div>
+        <div className="flex min-w-0 items-center gap-3">{branding.logo_url&&<img src={branding.logo_url} alt="" className="size-10 rounded-lg border border-slate-200 bg-white object-contain p-1"/>}<div className="min-w-0"><p className="truncate text-sm font-bold text-slate-900">{branding.app_name}</p><p className="mt-1 truncate text-xs text-slate-500">{branding.company_name} · Client service request</p></div></div>
         <Link to="/client/dashboard" className="inline-flex items-center gap-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700"><ArrowLeft size={14}/> Client dashboard</Link>
       </header>
       <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/[.04]">
